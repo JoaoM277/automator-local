@@ -1,20 +1,17 @@
 const path = require("path");
-const fs = require("fs");
+const fs = require("fs/promises");
+const { logger } = require("../core/logger");
 
-async function moveFile({homeFolder, destFolder, eventType, ext}) {
+async function moveFile({ homeFolder, destFolder, eventType, ext }) {
   if (eventType !== "rename") return;
-  if (ext !== ".txt") return;
-  if (!fs.existsSync(homeFolder)) {
-    console.log("Arquivo não encontrado", homeFolder);
-    return;
+  try {
+    await fs.access(homeFolder);
+  } catch (error) {
+    console.log("Arquivo não encontrado");
   }
 
-  fs.rename(homeFolder, destFolder, (err) => {
-    if (err) {
-      console.log(err);
-      return;
-    }
-
+  try {
+    await fs.rename(homeFolder, destFolder, { overwrite: true });
     console.log(
       "Arquivo " +
         ext +
@@ -23,7 +20,15 @@ async function moveFile({homeFolder, destFolder, eventType, ext}) {
         " para " +
         destFolder,
     );
-  });
+    const STATUS = "SUCESS";
+    const ACTION = "move";
+    logger(destFolder, STATUS, ACTION);
+  } catch (err) {
+    console.log("Falha ao mover o arquivo", err);
+    const STATUS = "FAILED";
+    const ACTION = "move";
+    logger(destFolder, STATUS, ACTION);
+  }
 }
 
 module.exports = { moveFile };
