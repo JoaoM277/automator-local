@@ -17,6 +17,7 @@ async function logger(destFolder, STATUS, ACTION) {
     
   } catch (error) {
     console.error(error);
+    console.log("Rodou esse erro")
   }
 }
 

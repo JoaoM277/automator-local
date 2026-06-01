@@ -1,6 +1,5 @@
 const path = require("path");
 const fs = require("fs/promises");
-const { logger } = require("../core/logger");
 
 async function moveFile({ homeFolder, destFolder, eventType, ext }) {
   if (eventType !== "rename") return;
@@ -20,14 +19,8 @@ async function moveFile({ homeFolder, destFolder, eventType, ext }) {
         " para " +
         destFolder,
     );
-    const STATUS = "SUCESS";
-    const ACTION = "move";
-    logger(destFolder, STATUS, ACTION);
   } catch (err) {
     console.log("Falha ao mover o arquivo", err);
-    const STATUS = "FAILED";
-    const ACTION = "move";
-    logger(destFolder, STATUS, ACTION);
   }
 }
 

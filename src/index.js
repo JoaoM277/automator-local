@@ -16,6 +16,7 @@ watchingFolder(Folder, ({ eventType, filename }) => {
   console.log("Novo evento: " + eventType);
   const dirFile = path.join(Folder, filename);
   const destFolder = path.join(destinit, path.basename(dirFile));
+  console.log(theRule)
 
   const context = {
     homeFolder: dirFile,

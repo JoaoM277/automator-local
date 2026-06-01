@@ -1,34 +1,36 @@
 const { actionChange } = require("./actionRegister");
 const fs = require("fs");
+const { logger } = require("./logger");
 
 let i = 4;
 
 async function retryHandler(context, theRule) {
   console.log("Função iniciada");
   while (i >= 1) {
+    theRule.action.forEach((oneAction)=>{
     try {
       if (!fs.existsSync(context.homeFolder)) {
-        console.log("Passou por aqui, 3");
-        throw new Error("Pasta não existe");
+        console.log("Pasta não encontrada");
+        const STATUS = "failed";
       }
       console.log("Passamos aqui na função");
       const handlers = actionChange(theRule);
       for (const handler of handlers) {
-        await handler(context);
-        i--;
+        handler(context);
         console.log("Passou por aqui, 1");
+        const STATUS = "sucess";
+        console.log(context.destFolder)
+        logger(context.destFolder, STATUS, oneAction);
+        i--;
+        break;
       }
-
-      console.log("Passou por aqui, 2");
-      i--;
-
-      const STATUS = "sucess";
-      break;
     } catch (error) {
-      const STATUS = "failed";
       console.error(error);
+      const STATUS = "failed";
+      logger(context.destFolder, STATUS, ACTION);
       i--;
     }
+    })
   }
 }
 
